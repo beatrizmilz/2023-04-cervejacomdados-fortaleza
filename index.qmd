@@ -54,7 +54,10 @@ incremental: false
 
 ## Importando os dados no R
 
+-   Conseguimos "imitar" o processo de baixar o arquivo usando programação.
+
 ```{r}
+#| code-fold: true
 #| eval: false
 #| echo: true
 
@@ -73,7 +76,7 @@ httr::POST(link_sigbm, # <2>
 ------------------------------------------------------------------------
 
 ```{r}
-#| echo: true
+#| code-fold: true
 sigbm_bruto <- readxl::read_excel("sigbm.xlsx", skip = 4)  # <4>
 
 names(sigbm_bruto) # <5>
@@ -85,6 +88,7 @@ names(sigbm_bruto) # <5>
 ------------------------------------------------------------------------
 
 ```{r}
+#| code-fold: true
 sigbm <- sigbm_bruto |> 
   janitor::clean_names() |>  # <6>
   dplyr::mutate(
