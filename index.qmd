@@ -15,7 +15,7 @@ knitr:
   opts_chunk: 
     echo: true
 lang: pt   
-incremental: true
+incremental: false
 ---
 
 ## Porque barragens?
@@ -147,6 +147,8 @@ sigbm |>
 -   Podemos usar o GitHub Actions para baixar e salvar dados ao longo do tempo
 
 -   Pode ser útil para jornalistas, pesquisadores, setor privado, etc.
+
+-   O GH Actions NÃO depende do R :)
 
 -   Posts sobre GitHub Actions: <https://beamilz.com/series-gha.html>
 
