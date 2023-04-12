@@ -1,0 +1,166 @@
+---
+title: "Acompanhando dados sobre barragens de mineração no Brasil"
+subtitle: "Cerveja com Dados Fortaleza"
+date: "2023-04-12"
+date-format: long
+author: "[Beatriz Milz](https://beamilz.com)"
+format: 
+  revealjs:
+    slide-number: true
+    logo: "images/logo.jpg"
+    footer: "Slides por [Beatriz Milz](https://beamilz.com) (@BeaMilz), feito com [Quarto](https://quarto.org/docs/presentations/revealjs/index.html). Código disponível [no GitHub](https://github.com/beatrizmilz/2023-04-cervejacomdados-fortaleza)."
+    theme: ["custom.scss"]    
+editor: visual
+knitr:
+  opts_chunk: 
+    echo: true
+lang: pt   
+incremental: true
+---
+
+## Porque barragens?
+
+-   Eu gosto de automatizar tarefas!
+
+-   Um exemplo com dados públicos
+
+-   Base de dados com abrangência nacional
+
+## O que é o SIGBM?
+
+-   Agência Nacional de Mineração.
+
+    -   Sistema Integrado de Gestão de Barragens de Mineração.
+
+-   O empreendedor deve atualizar as informações sempre que ocorrerem mudanças na estrutura ou em seu reservatório.
+
+-   Acesse os dados em: <https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem>
+
+------------------------------------------------------------------------
+
+[![SIGBM](images/sigbm.png){fig-align="center"}](https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem)
+
+## SIGBM
+
+-   Permite fazer pesquisas, ver os resultados, e baixar em Excel, CSV ou PDF!
+
+-   Não disponibiliza o histórico ao baixar, apenas o cenário atual.
+
+-   É interessante ter o histórico. Exemplo: o volume armazenado foi alterado? aumentou? diminuiu?
+
+-   Descobri, utilizando a aba Network/Rede do navegador e fazendo a pesquisa, que ao clicar para baixar um arquivo Excel é enviado uma requisição POST para um [link fixo](https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem/ExportarExcel).
+
+-   Podemos usar esse link para baixar os dados em um script!
+
+## Importando os dados no R
+
+
+
+```{r}
+#| eval: false
+#| echo: true
+
+link_sigbm <-   "https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem/ExportarExcel" # <1>
+
+httr::POST(link_sigbm, # <2>
+           httr::write_disk("sigbm.xlsx")) # <3>
+```
+
+1.  Salvando o link em um objeto
+
+2.  Fazer uma requisição POST no link
+
+3.  Salvar o resultado em um arquivo
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: true
+sigbm_bruto <- readxl::read_excel("sigbm.xlsx", skip = 4)  # <4>
+
+names(sigbm_bruto) # <5>
+```
+
+4.  Importar dados, pulando 4 linhas iniciais
+5.  Vendo o nome das colunas!
+
+------------------------------------------------------------------------
+
+```{r}
+sigbm <- sigbm_bruto |> 
+  janitor::clean_names() |>  # <6>
+  dplyr::mutate(
+    lat = parzer::parse_lat(latitude),   # <7>
+    long = parzer::parse_lon(longitude)  # <7>
+  ) |> 
+  dplyr::filter(lat != 0, long != 0) # <8>
+```
+
+6.  Limpando nome das colunas!
+
+7.  Arrumando as colunas de lat/long
+
+8.  Removendo linhas onde lat/long é igual à 0 (erro de cadastro)
+
+## Usando os dados importados
+
+```{r}
+#| code-fold: true
+library(leaflet)
+sigbm |> 
+  dplyr::mutate(texto = glue::glue(
+               "UF: {uf} <br>
+               ID: {id_barragem} <br> 
+               Nome da barragem: {nome_da_barragem} <br>
+               Empreendedor: {nome_do_empreendedor} <br>
+               Minério principal: {minerio_principal}"
+             )) |> 
+  leaflet() |> 
+  addProviderTiles("Esri.WorldImagery") |> 
+  addMarkers(~ long, ~lat,
+             clusterOptions = markerClusterOptions(),
+             popup = ~texto)
+```
+
+## Avançando na Automatização
+
+-   Conseguimos acessar os dados diretamente do R.
+
+-   Isso ainda não resolve a questão de ter um histórico!
+
+-   Podemos usar o **GitHub Actions** para pedir que um computador execute um código todos os dias!
+
+-   Configurei um workflow para baixar dados diariamente e salvar em um [repositório no GitHub](https://github.com/beatrizmilz/sigbm/tree/main/data-raw).
+
+-   Tem dados desde 05/05/2022.
+
+------------------------------------------------------------------------
+
+![](images/repo.png) <https://github.com/beatrizmilz/sigbm/tree/main/data-raw>
+
+------------------------------------------------------------------------
+
+![](images/releases.png){fig-align="center"}
+
+[https://github.com/beatrizmilz/sigbm/releases/tag/dados](https://github.com/beatrizmilz/sigbm/releases/tag/dadoshttps://github.com/beatrizmilz/sigbm/releases/tag/dados)
+
+
+## Beatriz Milz
+
+- Co-organizadora: R-Ladies São Paulo / Latin-R / satRday São Paulo
+
+- Professora na [Curso-R](https://curso-r.com/) e  consultora na R6
+
+- Instrutora de Tidyverse certificada pela RStudio
+
+### Contato
+
+
+- Twitter: [\@BeaMilz](https://twitter.com/BeaMilz)
+
+- Blog: [beamilz.com](https://beamilz.com)
+
+- Email: milz.bea@gmail.com
+
+
+# Obrigada!
