@@ -54,8 +54,6 @@ incremental: true
 
 ## Importando os dados no R
 
-
-
 ```{r}
 #| eval: false
 #| echo: true
@@ -144,23 +142,28 @@ sigbm |>
 
 [https://github.com/beatrizmilz/sigbm/releases/tag/dados](https://github.com/beatrizmilz/sigbm/releases/tag/dadoshttps://github.com/beatrizmilz/sigbm/releases/tag/dados)
 
+## Conclusão
+
+-   Podemos usar o GitHub Actions para baixar e salvar dados ao longo do tempo
+
+-   Pode ser útil para jornalistas, pesquisadores, setor privado, etc.
+
+-   Posts sobre GitHub Actions: <https://beamilz.com/series-gha.html>
 
 ## Beatriz Milz
 
-- Co-organizadora: R-Ladies São Paulo / Latin-R / satRday São Paulo
+-   Co-organizadora: R-Ladies São Paulo / Latin-R / satRday São Paulo
 
-- Professora na [Curso-R](https://curso-r.com/) e  consultora na R6
+-   Professora na [Curso-R](https://curso-r.com/) e consultora na R6
 
-- Instrutora de Tidyverse certificada pela RStudio
+-   Instrutora de Tidyverse certificada pela RStudio
 
 ### Contato
 
+-   Twitter: [\@BeaMilz](https://twitter.com/BeaMilz)
 
-- Twitter: [\@BeaMilz](https://twitter.com/BeaMilz)
+-   Blog: [beamilz.com](https://beamilz.com)
 
-- Blog: [beamilz.com](https://beamilz.com)
-
-- Email: milz.bea@gmail.com
-
+-   Email: milz.bea\@gmail.com
 
 # Obrigada!
