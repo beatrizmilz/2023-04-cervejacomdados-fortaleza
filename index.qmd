@@ -1,6 +1,6 @@
 ---
-title: "Acompanhando dados sobre barragens de mineração no Brasil"
-subtitle: "Cerveja com Dados Fortaleza"
+title: "Utilizando GitHub Actions para baixar dados públicos"
+subtitle: "Um exemplo com dados de barragens de mineração <br><br> Cerveja com Dados Fortaleza"
 date: "2023-04-12"
 date-format: long
 author: "[Beatriz Milz](https://beamilz.com)"
@@ -18,29 +18,29 @@ lang: pt
 incremental: false
 ---
 
-## Por que barragens? {visibility="hidden"}
+## Por que esse exemplo?
 
 -   Eu gosto de automatizar tarefas!
 
--   Um exemplo com dados públicos
+-   Um exemplo com **dados públicos**
 
 -   Base de dados com abrangência nacional
 
-## O que é o SIGBM? {visibility="hidden"}
+## O que é o SIGBM?
 
 -   Agência Nacional de Mineração.
 
     -   Sistema Integrado de Gestão de Barragens de Mineração.
 
--   O empreendedor deve atualizar as informações sempre que ocorrerem mudanças na estrutura ou em seu reservatório.
+-   Segundo o site do sistema, o empreendedor deve atualizar as informações sempre que ocorrerem mudanças na estrutura ou em seu reservatório.
 
 -   Acesse os dados em: <https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem>
 
-## SIGBM
+------------------------------------------------------------------------
 
 [![SIGBM](images/sigbm.png){fig-align="center"}](https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem)
 
-## SIGBM {visibility="hidden"}
+## SIGBM
 
 -   Permite fazer pesquisas, ver os resultados, e baixar em Excel, CSV ou PDF!
 
@@ -52,7 +52,7 @@ incremental: false
 
 -   Podemos usar esse link para baixar os dados em um script!
 
-## Baixando os dados no R 
+## Importando os dados no R
 
 -   Conseguimos "imitar" o processo de baixar o arquivo usando programação.
 
@@ -73,7 +73,7 @@ httr::POST(link_sigbm, # <2>
 
 3.  Salvar o resultado em um arquivo
 
-## {visibility="hidden"}
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -85,7 +85,7 @@ names(sigbm_bruto) # <5>
 4.  Importar dados, pulando 4 linhas iniciais
 5.  Vendo o nome das colunas!
 
-## {visibility="hidden"}
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -132,7 +132,44 @@ sigbm |>
 
 -   Podemos usar o **GitHub Actions** para pedir que um computador execute um código todos os dias!
 
+-   Configurei um workflow para baixar dados diariamente e salvar em um [repositório no GitHub](https://github.com/beatrizmilz/sigbm/tree/main/data-raw).
+
 -   Tem dados desde 05/05/2022.
+
+## Exemplo do código do Workflow
+
+Código em: [sigbm/.github/workflows/download-sigbm.yaml](https://github.com/beatrizmilz/sigbm/blob/main/.github/workflows/download-sigbm.yaml)
+
+```         
+on:
+  schedule:
+    - cron:  "15 12 * * *"
+  workflow_dispatch:
+    branches: [main, master]
+
+
+name: download-sigbm
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch latest data
+        run: |-
+          curl -X POST -d "" https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem/ExportarExcel --output data-raw/sigbm_download_`date +"%Y-%m-%d"`.xlsx
+
+      - name: commit results
+        run: |
+          git config --local user.email "milz.bea@gmail.com"
+          git config --local user.name "Beatriz Milz"
+          git add .
+          git commit -m 'Update data' || echo "Update data"
+          git push origin || echo "Update data"
+```
 
 ------------------------------------------------------------------------
 

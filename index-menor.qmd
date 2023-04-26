@@ -18,7 +18,7 @@ lang: pt
 incremental: false
 ---
 
-## Por que barragens?
+## Por que barragens? {visibility="hidden"}
 
 -   Eu gosto de automatizar tarefas!
 
@@ -26,7 +26,7 @@ incremental: false
 
 -   Base de dados com abrangência nacional
 
-## O que é o SIGBM?
+## O que é o SIGBM? {visibility="hidden"}
 
 -   Agência Nacional de Mineração.
 
@@ -36,11 +36,11 @@ incremental: false
 
 -   Acesse os dados em: <https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem>
 
-------------------------------------------------------------------------
+## SIGBM
 
 [![SIGBM](images/sigbm.png){fig-align="center"}](https://app.anm.gov.br/SIGBM/Publico/ClassificacaoNacionalDaBarragem)
 
-## SIGBM
+## SIGBM {visibility="hidden"}
 
 -   Permite fazer pesquisas, ver os resultados, e baixar em Excel, CSV ou PDF!
 
@@ -52,7 +52,7 @@ incremental: false
 
 -   Podemos usar esse link para baixar os dados em um script!
 
-## Importando os dados no R
+## Baixando os dados no R 
 
 -   Conseguimos "imitar" o processo de baixar o arquivo usando programação.
 
@@ -73,7 +73,7 @@ httr::POST(link_sigbm, # <2>
 
 3.  Salvar o resultado em um arquivo
 
-------------------------------------------------------------------------
+## {visibility="hidden"}
 
 ```{r}
 #| code-fold: true
@@ -85,7 +85,7 @@ names(sigbm_bruto) # <5>
 4.  Importar dados, pulando 4 linhas iniciais
 5.  Vendo o nome das colunas!
 
-------------------------------------------------------------------------
+## {visibility="hidden"}
 
 ```{r}
 #| code-fold: true
@@ -131,8 +131,6 @@ sigbm |>
 -   Isso ainda não resolve a questão de ter um histórico!
 
 -   Podemos usar o **GitHub Actions** para pedir que um computador execute um código todos os dias!
-
--   Configurei um workflow para baixar dados diariamente e salvar em um [repositório no GitHub](https://github.com/beatrizmilz/sigbm/tree/main/data-raw).
 
 -   Tem dados desde 05/05/2022.
 
